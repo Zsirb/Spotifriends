@@ -38,6 +38,6 @@ async def spotify_callback(request: Request, code: Optional[str] = None, error: 
     
     try:
         auth_manager.get_access_token(code)
-        return RedirectResponse(url="http://localhost:5173/")
+        return RedirectResponse(url="https://zsirb.hu/")
     except Exception as e:
         return {"error": "Token error", "detail": str(e)}

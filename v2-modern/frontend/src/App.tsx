@@ -242,19 +242,19 @@ const App: React.FC = () => {
               </div>
 
               {searchResults.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-[#282828] rounded-2xl overflow-hidden shadow-2xl z-20 border border-white/10">
+                <div className="w-full mt-4 bg-[#282828] rounded-2xl shadow-2xl z-20 border border-white/10">
                   {searchResults.map((track) => (
                     <div 
                       key={track.uri} 
-                      className="p-3 flex items-center gap-3 hover:bg-white/5 transition-colors cursor-pointer group"
+                      className="p-4 flex items-center gap-4 hover:bg-white/5 transition-colors cursor-pointer group border-b border-white/5 last:border-0"
                       onClick={() => addToQueue(track.uri)}
                     >
-                      <img src={track.img} alt={track.name} className="w-12 h-12 rounded" />
+                      <img src={track.img} alt={track.name} className="w-14 h-14 rounded-lg shadow-lg" />
                       <div className="flex-1 min-width-0">
-                        <div className="font-bold truncate text-sm">{track.name}</div>
-                        <div className="text-gray-400 truncate text-xs">{track.artist}</div>
+                        <div className="font-bold truncate text-base">{track.name}</div>
+                        <div className="text-gray-400 truncate text-sm">{track.artist}</div>
                       </div>
-                      <Plus className="text-gray-500 group-hover:text-[#1DB954]" size={20} />
+                      <Plus className="text-gray-500 group-hover:text-[#1DB954]" size={24} />
                     </div>
                   ))}
                 </div>

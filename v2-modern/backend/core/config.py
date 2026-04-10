@@ -13,7 +13,7 @@ load_dotenv(env_path)
 class Settings(BaseSettings):
     SPOTIPY_CLIENT_ID: str = os.getenv("SPOTIPY_CLIENT_ID", "")
     SPOTIPY_CLIENT_SECRET: str = os.getenv("SPOTIPY_CLIENT_SECRET", "")
-    SPOTIPY_REDIRECT_URI: str = os.getenv("SPOTIPY_REDIRECT_URI", "http://127.0.0.1:8000/api/auth/spotify/callback")
+    SPOTIPY_REDIRECT_URI: str = os.getenv("SPOTIPY_REDIRECT_URI", "https://api.zsirb.hu/api/auth/spotify/callback")
     
     ADMIN_NAME: str = os.getenv("ADMIN_NAME", "admin")
     ADMIN_PASSWORD: str = os.getenv("ADMIN_PASSWORD", "admin")
