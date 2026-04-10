@@ -1,11 +1,14 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
 from core.spotify import get_spotify_client
+from core.database import User
+from api.auth import get_current_user
 
 router = APIRouter()
 
 @router.get("/")
-async def search_track(q: str = Query(..., min_length=1)):
-    sp = get_spotify_client()
+async def search_track(q: str = Query(..., min_length=1), user: User = Depends(get_current_user)):
+    if not user: raise HTTPException(status_code=401)
+    sp = get_spotify_client(user)
     if not sp:
         return {"results": []}
     
@@ -24,8 +27,9 @@ async def search_track(q: str = Query(..., min_length=1)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/queue/{uri}")
-async def add_to_queue(uri: str):
-    sp = get_spotify_client()
+async def add_to_queue(uri: str, user: User = Depends(get_current_user)):
+    if not user: raise HTTPException(status_code=401)
+    sp = get_spotify_client(user)
     if not sp:
         raise HTTPException(status_code=401, detail="Not authenticated with Spotify")
     

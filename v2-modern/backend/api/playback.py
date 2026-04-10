@@ -1,15 +1,20 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
 from core.spotify import get_spotify_client
+from core.database import User
+from api.auth import get_current_user
 from typing import Optional
 
 router = APIRouter()
 
 @router.get("/status")
-async def get_status():
-    sp = get_spotify_client()
+async def get_status(user: User = Depends(get_current_user)):
+    if not user:
+        return {"active": False, "authenticated": False, "is_logged_in": False}
+
+    sp = get_spotify_client(user)
     if not sp:
-        return {"active": False, "authenticated": False}
-    
+        return {"active": False, "authenticated": False, "is_logged_in": True, "username": user.username}
+
     try:
         current = sp.current_playback()
         if current and current['item']:
@@ -17,6 +22,8 @@ async def get_status():
             return {
                 "active": True,
                 "authenticated": True,
+                "is_logged_in": True,
+                "username": user.username,
                 "track_name": track['name'],
                 "artist_name": track['artists'][0]['name'],
                 "album_art": track['album']['images'][0]['url'] if track['album']['images'] else "",
@@ -27,12 +34,13 @@ async def get_status():
             }
     except Exception as e:
         print(f"Status error: {e}")
-    
-    return {"active": False, "authenticated": True}
+
+    return {"active": False, "authenticated": True, "is_logged_in": True, "username": user.username}
 
 @router.get("/control/{action}")
-async def control_playback(action: str):
-    sp = get_spotify_client()
+async def control_playback(action: str, user: User = Depends(get_current_user)):
+    if not user: raise HTTPException(status_code=401)
+    sp = get_spotify_client(user)
     if not sp:
         raise HTTPException(status_code=401, detail="Not authenticated with Spotify")
     
@@ -52,8 +60,9 @@ async def control_playback(action: str):
         raise HTTPException(status_code=404, detail=str(e))
 
 @router.get("/seek/{pos_ms}")
-async def seek_playback(pos_ms: int):
-    sp = get_spotify_client()
+async def seek_playback(pos_ms: int, user: User = Depends(get_current_user)):
+    if not user: raise HTTPException(status_code=401)
+    sp = get_spotify_client(user)
     if not sp:
         raise HTTPException(status_code=401, detail="Not authenticated with Spotify")
     try:
@@ -63,8 +72,9 @@ async def seek_playback(pos_ms: int):
         raise HTTPException(status_code=404, detail=str(e))
 
 @router.get("/volume/{percent}")
-async def set_volume(percent: int):
-    sp = get_spotify_client()
+async def set_volume(percent: int, user: User = Depends(get_current_user)):
+    if not user: raise HTTPException(status_code=401)
+    sp = get_spotify_client(user)
     if not sp:
         raise HTTPException(status_code=401, detail="Not authenticated with Spotify")
     try:

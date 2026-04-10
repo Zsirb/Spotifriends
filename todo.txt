@@ -1,0 +1,3 @@
+separate acconts
+be able to make accounts
+more people on api

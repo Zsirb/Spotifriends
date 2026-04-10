@@ -3,7 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from api import auth, playback, search
 import uvicorn
 
+from core.database import init_db
+
 app = FastAPI(title="Spotifriends API")
+init_db()
 
 app.add_middleware(
     CORSMiddleware,

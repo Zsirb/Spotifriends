@@ -8,8 +8,13 @@ const api = axios.create({
 export const authApi = {
   login: (credentials: { username: string; password: str }) => 
     api.post('/auth/login', credentials),
+  register: (credentials: { username: string; password: str }) => 
+    api.post('/auth/register', credentials),
+  logout: () => api.get('/auth/logout'),
+  deleteAccount: () => api.delete('/auth/account'),
   getSpotifyLoginUrl: () => 
     api.get('/auth/spotify/login'),
+  logoutSpotify: () => api.get('/auth/spotify/logout'),
 };
 
 export const playbackApi = {
