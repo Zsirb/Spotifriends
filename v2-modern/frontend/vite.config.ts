@@ -8,4 +8,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  server: {
+    allowedHosts: ['zsirb.hu', 'localhost', '127.0.0.1'],
+  },
 })
