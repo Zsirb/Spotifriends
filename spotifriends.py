@@ -10,7 +10,6 @@ from flask import Flask, request, redirect, render_template_string, jsonify, ses
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
-from pyngrok import ngrok
 
 # Silence Flask/Werkzeug logs
 log = logging.getLogger('werkzeug')
@@ -426,10 +425,6 @@ def api_transfer(device_id):
 def api_restart():
     def restart():
         time.sleep(1)
-        try:
-            ngrok.kill()
-            time.sleep(1)
-        except: pass
         subprocess.Popen([sys.executable] + sys.argv, close_fds=True)
         os._exit(0)
     
@@ -500,23 +495,6 @@ if __name__ == '__main__':
         if sys.platform != "win32":
             os.system(f"lsof -ti:{port} | grep -v {mypid} | xargs kill -9 2>/dev/null")
             time.sleep(1)
-    
-    # NGROK startup with retries
-    for i in range(3):
-        try:
-            ngrok.kill()
-            time.sleep(1)
-            public_url = ngrok.connect(port).public_url
-            print("\n\n" + "="*50)
-            print(f"WEBOLDAL CÍME: {public_url}")
-            print("="*50 + "\n\n")
-            break
-        except Exception as e:
-            if i < 2:
-                print(f"[NGROK] Újrapróbálás {i+1}/3... ({e})")
-                time.sleep(3) 
-            else:
-                print(f"[NGROK HIBA] Kritikus hiba: {e}")
 
     # Local IP detection
     try:
